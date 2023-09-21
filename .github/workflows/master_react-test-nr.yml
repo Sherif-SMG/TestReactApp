@@ -26,12 +26,17 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
-      
+       #Zip build directory
+      - name: zip release
+        uses: TheDoctor0/zip-release@0.7.1
+        with:
+          filename: stagerelease.zip
+          path: ./dist/*
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: node-app
-          path: .
+          path: stagerelease.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -53,4 +58,4 @@ jobs:
           app-name: 'react-test-nr'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_9C25FD3A5BC0423EBB9F2CE0AFE60773 }}
-          package: .
+          package: stagerelease.zip
